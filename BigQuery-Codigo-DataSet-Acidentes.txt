@@ -1,0 +1,43 @@
+CÓDIGO DE CONSULTA FEITA EM SQL NO BIGQUERY NA GCP (GOOGLE CLOUD PLATFORM)
+
+
+-- CONSULTAS POR ANO
+SELECT * FROM projeto-final-grupo03.grupo03.acidentes WHERE ANO = 2020 ORDER BY data;
+SELECT * FROM projeto-final-grupo03.grupo03.acidentes WHERE ANO = 2019 ORDER BY data;
+
+-- CRIAR TABELA PARA O ANO DE 2019 e 2020 ORDENANDO POR DATA
+CREATE OR REPLACE TABLE grupo03.acidentes_2019 AS (SELECT * FROM projeto-final-grupo03.grupo03.acidentes WHERE ANO = 2019 ORDER BY data);
+CREATE OR REPLACE TABLE grupo03.acidentes_2020 AS (SELECT * FROM projeto-final-grupo03.grupo03.acidentes WHERE ANO = 2020 ORDER BY data);
+
+-- CONSULTA TOTAL DE ACIDENTES POR ANO
+SELECT COUNT(DISTINCT id_acidente) AS total_2019 FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019;
+SELECT COUNT(DISTINCT id_acidente) AS total_2020 FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020;
+
+-- CRIAR TABELA ANO DE 2019 e 2020 CONTENDO DATA E ACIDENTES DIÁRIOS ÚNICOS ORDENANDO POR DATA
+CREATE OR REPLACE TABLE grupo03.acidentes_2019_pordia AS (SELECT data, count(DISTINCT id_acidente) AS total_2019 FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019 GROUP BY data ORDER BY data);
+CREATE OR REPLACE TABLE grupo03.acidentes_2020_pordia AS (SELECT data, count(DISTINCT id_acidente) AS total_2020 FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020 GROUP BY data ORDER BY data);
+
+-- CONSULTA NÚMERO DE ACIDENTES POR REGIÃO NO PRIMEIRO SEMESTRE DE 2019 E 2020 ORDENANDO POR REGIÃO
+SELECT count(DISTINCT id_acidente) AS acidentes1semreg_2019, regiao FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019 AND mes BETWEEN 1 and 6 GROUP BY regiao ORDER BY regiao;
+SELECT count(DISTINCT id_acidente) AS acidentes1semreg_2020, regiao FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020 AND mes BETWEEN 1 and 6 GROUP BY regiao ORDER BY regiao;
+
+-- CRIAR TABELA COM O NÚMERO DE ACIDENTES POR REGIÃO NO PRIMEIRO SEMESTRE DE 2019 E 2020 ORDENANDO POR REGIÃO
+CREATE OR REPLACE TABLE grupo03.acidentesRegiao_2019 AS (SELECT count(DISTINCT id_acidente) AS acidentes1sem_2019, regiao FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019 AND mes BETWEEN 1 and 6 GROUP BY regiao ORDER BY regiao);
+CREATE OR REPLACE TABLE grupo03.acidentesRegiao_2020 AS (SELECT count(DISTINCT id_acidente) AS acidentes1sem_2020, regiao FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020 AND mes BETWEEN 1 and 6 GROUP BY regiao ORDER BY regiao);
+
+-- CONSULTA NÚMERO DE ACIDENTES POR UF NO PRIMEIRO SEMESTRE DE 2019 E 2020 ORDENANDO POR RESULTADO CRESCENTE
+SELECT count(DISTINCT id_acidente) AS acidentes1semuf_2019, uf FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019 AND mes BETWEEN 1 and 6 GROUP BY uf ORDER BY acidentes1semuf_2019;
+SELECT count(DISTINCT id_acidente) AS acidentes1semuf_2020, uf FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020 AND mes BETWEEN 1 and 6 GROUP BY uf ORDER BY acidentes1semuf_2020;
+
+-- CRIAR TABELA COM O NÚMERO DE ACIDENTES POR UF NO PRIMEIRO SEMESTRE DE 2019 E 2020 ORDENANDO POR RESULTADO CRESCENTE
+CREATE OR REPLACE TABLE grupo03.acidentesUF_2019 AS (SELECT count(DISTINCT id_acidente) AS acidentes1semuf_2019, uf FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2019 AND mes BETWEEN 1 and 6 GROUP BY uf ORDER BY acidentes1semuf_2019);
+CREATE OR REPLACE TABLE grupo03.acidentesUF_2020 AS (SELECT count(DISTINCT id_acidente) AS acidentes1semuf_2020, uf FROM `projeto-final-grupo03.grupo03.acidentes` WHERE ano = 2020 AND mes BETWEEN 1 and 6 GROUP BY uf ORDER BY acidentes1semuf_2020);
+
+-- CONSULTA CONTAR ACIDENTES ÚNICOS ENTRE 2019 E 2020 AGRUPANDO E ORDENANDO POR DATA
+SELECT data, count(DISTINCT id_acidente) AS total_2019_2020 FROM `projeto-final-grupo03.grupo03.acidentes` GROUP BY data ORDER BY data;
+
+-- CRIAR TABELA CONTANDO ACIDENTES ÚNICOS ENTRE 2019 E 2020 AGRUPANDO E ORDENANDO POR DATA
+CREATE OR REPLACE TABLE grupo03.acidentes_20192020_pordia AS (SELECT data, count(DISTINCT id_acidente) AS total_2019_2020 FROM `projeto-final-grupo03.grupo03.acidentes` GROUP BY data ORDER BY data);
+
+-- CONSULTA ACIDENTES ÚNICOS ENTRE 2019 e 2020 AGRUPANDO POR CONDIÇÃO METEOROLÓGICA E ORDENANDO POR RESULTADO DESCENTENTE
+SELECT condicao_metereologica, count(DISTINCT id_acidente) AS acidentescondMeteo FROM `projeto-final-grupo03.grupo03.acidentes` GROUP BY condicao_metereologica ORDER BY acidentescondMeteo DESC;
